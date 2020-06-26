@@ -12,21 +12,27 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.rmi.UnknownHostException;
 
 public class Main extends Application {
+
+
+
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
 
 
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Add Acces Point");
 
         Button button = new Button(" button1");
         Button button2 = new Button("button2");
@@ -37,17 +43,19 @@ HBox.setHgrow(button, Priority.ALWAYS);
 
         Button button1 = new Button("radiobuta");
 
-        Text text1 = new Text("some test");
-        Text text2 = new Text("test2");
-
+        Text text1 = new Text("IP Address");
+        Text text2 = new Text("Network Name");
+Text Acces_point_location = new Text("Acces point location");
         TextField textField1 = new TextField();
         TextField textField2 = new TextField();
         Button buttona = new Button("Submit");
         Button buttonb = new Button("Clear");
 
+        TextArea textArea = new TextArea();
+        textArea.setText("dasdasdsadsadsa");
+        VBox  verticalbox = new VBox(textArea);
 
-
-        Label label = new Label("example label");
+        Label label = new Label("ipv4 or ipv6");
         RadioButton rb1 = new RadioButton();
         rb1.setText("hello");
         RadioButton rb2 = new RadioButton("calendar");
@@ -83,7 +91,31 @@ button1.setOnAction(new EventHandler<ActionEvent>() {
     @Override
     public void handle(ActionEvent event) {
 
+        if(textField2.getText()=="")            textField2.setStyle("-fx-background-color: #ff0000; ");
+ else   label.setText( is_ipv4_ipv6_or_not(textField2.getText()));
+//String addres4 = textField2.getText();
+ //InetAddress some = new InetAddress.getByName(addres4);
+
+        String partial_ipv4=textField2.getText().substring(0, textField2.getText().lastIndexOf("."));
+        String end_ipv4=  textField2.getText().substring(textField2.getText().lastIndexOf(".")+1);
+String helpfull_string;
+
+ip_check[] tryna= new  ip_check [10];
+for (int i=0; i<10;i++){
+    helpfull_string= partial_ipv4+"."+Integer.toString(Integer.parseInt(end_ipv4)+i);
+
+    tryna[i]= new ip_check(helpfull_string);
+    tryna[i].run();
+    textArea.appendText(tryna[i].getResult());
+}
+
+
+
+
+
 //// dac koilor jezeli puste jet
+
+
 
     }
 });
@@ -93,14 +125,17 @@ button1.setOnAction(new EventHandler<ActionEvent>() {
 
 
 
+
+
+
 // gridpane w opisie aplikacji okienek, do grida dodajemy buttony, hboxy, vboxy calosc ladnie widoczna
         primaryStage.show();
         GridPane gridPane = new GridPane();
-        gridPane.setMinSize(300, 300);
+        gridPane.setMinSize(300, 600);
         gridPane.setPadding(new Insets(10, 10, 10, 10));
         gridPane.setVgap(5);
         gridPane.setHgap(5);
-        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setAlignment(Pos.TOP_CENTER);
         gridPane.add(text1, 0, 0);
         gridPane.add(textField1, 1, 0);
         gridPane.add(text2, 0, 1);
@@ -111,6 +146,9 @@ button1.setOnAction(new EventHandler<ActionEvent>() {
         gridPane.add(rb1, 2,3);
         gridPane.add(rb2, 3,3);
         gridPane.add(hbox, 4,4);
+        gridPane.add( label, 4,1);
+        gridPane.add(verticalbox, 1, 4);
+
         primaryStage.setScene(new Scene(gridPane));
 
 
@@ -126,9 +164,80 @@ button1.setOnAction(new EventHandler<ActionEvent>() {
 
 
     }
+
+public static String is_ipv4_ipv6_or_not (String addres){
+
+
+    try {
+        InetAddress address2 = InetAddress.getByName(addres);
+
+
+        if(address2 instanceof Inet4Address) {addres="ipv4";}
+        else if (address2 instanceof Inet6Address)
+        {
+
+            addres="ipv6";
+
+
+        }
+
+    } catch (java.net.UnknownHostException e) {
+        {  addres= "not valid";}
+    }
+
+
+
+    return addres;
+
+    }
+
+
+
 }
 
 
 
+
+class ip_check extends Thread {
+
+
+
+    String result="";
+
+
+
+
+    public String getIpv4() {
+        return ipv4;
+    }
+    public String getResult() {return result;}
+    public ip_check(String ipv4){
+        this.ipv4 =ipv4;
+    }
+    //  public void setIpv4(String ipv4) {
+    //     this.ipv4 = ipv4;
+    // }
+    String ipv4;
+
+
+    public ip_check() { ipv4 = ""; }
+
+    public void run() {
+        try { InetAddress ipv4_innet_check = InetAddress.getByName(ipv4);
+
+            if (ipv4_innet_check.isReachable(1000))
+                result="address " + ipv4 + " is alive \r\n";
+
+            else result="address " + ipv4 + " is ded \r\n ";;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+}
 
 

@@ -12,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -61,8 +60,7 @@ String dot=".";
 Label ipvtry = new Label("");
 
 Label ipstatus = new Label(".");
-        VBox verticalBox = new VBox(ipvtry, ipstatus);
-
+        HBox horizoBox = new HBox();
         RadioButton rb1 = new RadioButton();
         rb1.setText("hello");
         RadioButton rb2 = new RadioButton("calendar");
@@ -110,7 +108,7 @@ button1.setOnAction(new EventHandler<ActionEvent>() {
 String helpfull_string;
 
 ip_check[] tryna= new  ip_check [10];
-ipstatus.setFont(Font.font(300));
+ipstatus.setFont(Font.font(25));
 for (int i=0; i<10;i++){
     helpfull_string= partial_ipv4+"."+Integer.toString(Integer.parseInt(end_ipv4)+i);
 
@@ -120,13 +118,14 @@ for (int i=0; i<10;i++){
 ipvtry.setText(ipvtry.getText()+"\r\n"+tryna[i].getResult());
 if (tryna[i].alive_not)
 {
+    ipstatus.setStyle("-fx-text-fill: red");
 
-    ipstatus.setStyle("-fx-text-fill: green");
-ipstatus.setText(".");
+ipstatus.setText(ipstatus.getText()+"\n.");
 }
 else {
-    ipstatus.setStyle("-fx-text-fill: red");
-    ipstatus.setText(".");
+    ipstatus.setStyle("-fx-text-fill: green");
+
+    ipstatus.setText(ipstatus.getText()+"\n.");
 
 }
 
@@ -135,6 +134,7 @@ else {
 
 
 }
+        horizoBox.getChildren().addAll(ipvtry, ipstatus);
 
 
 
@@ -174,10 +174,10 @@ else {
         gridPane.add(rb2, 3,3);
         gridPane.add(hbox, 4,4);
         gridPane.add( label, 4,1);
-        gridPane.add(verticalbox, 1, 4);
+      //  gridPane.add(verticalbox, 1, 4);
 //gridPane.add(circle,4,4);
 
-gridPane.add(verticalBox, 1,5);
+gridPane.add(horizoBox, 1,5);
 
         primaryStage.setScene(new Scene(gridPane));
 

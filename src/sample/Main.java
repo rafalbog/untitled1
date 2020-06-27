@@ -13,6 +13,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -40,7 +42,6 @@ public class Main extends Application {
         HBox hbox = new HBox(button, button2);
 HBox.setHgrow(button, Priority.ALWAYS);
 
-
         Button button1 = new Button("radiobuta");
 
         Text text1 = new Text("IP Address");
@@ -52,10 +53,16 @@ Text Acces_point_location = new Text("Acces point location");
         Button buttonb = new Button("Clear");
 
         TextArea textArea = new TextArea();
-        textArea.setText("dasdasdsadsadsa");
-        VBox  verticalbox = new VBox(textArea);
 
+        textArea.setText("dasdasdsadsadsa");
+        HBox  verticalbox = new HBox(textArea);
+String dot=".";
         Label label = new Label("ipv4 or ipv6");
+Label ipvtry = new Label("");
+
+Label ipstatus = new Label(".");
+        VBox verticalBox = new VBox(ipvtry, ipstatus);
+
         RadioButton rb1 = new RadioButton();
         rb1.setText("hello");
         RadioButton rb2 = new RadioButton("calendar");
@@ -65,6 +72,8 @@ rb1.setSelected(true);
 rb2.setToggleGroup(group);
 RadioButton rb3 = new RadioButton("contacs");
 rb3.setToggleGroup(group);
+        Circle circle = new Circle(4,4,4);
+
 
 buttona.setOnAction(new EventHandler<ActionEvent>() {
     @Override
@@ -101,12 +110,30 @@ button1.setOnAction(new EventHandler<ActionEvent>() {
 String helpfull_string;
 
 ip_check[] tryna= new  ip_check [10];
+ipstatus.setFont(Font.font(300));
 for (int i=0; i<10;i++){
     helpfull_string= partial_ipv4+"."+Integer.toString(Integer.parseInt(end_ipv4)+i);
 
     tryna[i]= new ip_check(helpfull_string);
     tryna[i].run();
     textArea.appendText(tryna[i].getResult());
+ipvtry.setText(ipvtry.getText()+"\r\n"+tryna[i].getResult());
+if (tryna[i].alive_not)
+{
+
+    ipstatus.setStyle("-fx-text-fill: green");
+ipstatus.setText(".");
+}
+else {
+    ipstatus.setStyle("-fx-text-fill: red");
+    ipstatus.setText(".");
+
+}
+
+//    label.setGraphic();
+
+
+
 }
 
 
@@ -131,7 +158,7 @@ for (int i=0; i<10;i++){
 // gridpane w opisie aplikacji okienek, do grida dodajemy buttony, hboxy, vboxy calosc ladnie widoczna
         primaryStage.show();
         GridPane gridPane = new GridPane();
-        gridPane.setMinSize(300, 600);
+        gridPane.setMinSize(300, 900);
         gridPane.setPadding(new Insets(10, 10, 10, 10));
         gridPane.setVgap(5);
         gridPane.setHgap(5);
@@ -148,6 +175,9 @@ for (int i=0; i<10;i++){
         gridPane.add(hbox, 4,4);
         gridPane.add( label, 4,1);
         gridPane.add(verticalbox, 1, 4);
+//gridPane.add(circle,4,4);
+
+gridPane.add(verticalBox, 1,5);
 
         primaryStage.setScene(new Scene(gridPane));
 
@@ -218,7 +248,13 @@ class ip_check extends Thread {
     //     this.ipv4 = ipv4;
     // }
     String ipv4;
+ boolean alive_not=false;
 
+    public boolean get_circle_result(){
+   return  alive_not;
+
+
+ }
 
     public ip_check() { ipv4 = ""; }
 
@@ -226,9 +262,11 @@ class ip_check extends Thread {
         try { InetAddress ipv4_innet_check = InetAddress.getByName(ipv4);
 
             if (ipv4_innet_check.isReachable(1000))
-                result="address " + ipv4 + " is alive \r\n";
+            {  alive_not=true;
+                result="\r\n address " + ipv4 + " is alive ";}
 
-            else result="address " + ipv4 + " is ded \r\n ";;
+              else{ alive_not=false;
+                  result=" \r\n address " + ipv4 + " is ded  ";}
 
         } catch (IOException e) {
             e.printStackTrace();

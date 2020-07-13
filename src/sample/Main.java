@@ -9,11 +9,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -22,6 +20,7 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.rmi.UnknownHostException;
+import java.util.ArrayList;
 
 public class Main extends Application {
 
@@ -38,6 +37,11 @@ public class Main extends Application {
         Button button = new Button(" button1");
         Button button2 = new Button("button2");
 
+
+        Button add_new = new Button("add new");
+
+int number_of_stacked_ip_addresess=0;
+        ArrayList stack_all_ip_addreses=  new ArrayList();
         HBox hbox = new HBox(button, button2);
 HBox.setHgrow(button, Priority.ALWAYS);
 
@@ -50,12 +54,21 @@ Text Acces_point_location = new Text("Acces point location");
         TextField textField2 = new TextField();
         Button buttona = new Button("Submit");
         Button buttonb = new Button("Clear");
+        HBox lets_try_to_add_button_and_text = new HBox();
+        FlowPane lets_try_to_add_button_and_text_inflowpane = new FlowPane(4,8);
+
+        lets_try_to_add_button_and_text_inflowpane.setPrefWrapLength(220);
 
         TextArea textArea = new TextArea();
 
+
         textArea.setText("dasdasdsadsadsa");
         HBox  verticalbox = new HBox(textArea);
-String dot=".";
+
+
+
+        HBox  verbox_ipp_added_from_second_window = new HBox();
+
         Label label = new Label("ipv4 or ipv6");
 Label ipvtry = new Label("");
 
@@ -81,9 +94,20 @@ buttona.setOnAction(new EventHandler<ActionEvent>() {
     if (textField1.getText().equals(""))
       textField1.setText("fill some data");
         try {try {
+
             InetAddress ipv4_innet_check = InetAddress.getByName(textField1.getText());
-            if (ipv4_innet_check.isReachable(1000)) textField2.setText("alive");
-            else textField2.setText("no alive");
+            if (ipv4_innet_check.isReachable(1000)) {
+                textField2.setText("alive");
+                   Button alive_b = new Button("alive");
+
+            }
+            else {
+                textField2.setText("no alive");
+                Button alive_b = new Button("no alive");
+                textArea.getChildrenUnmodifiable().addAll(alive_b) ;
+
+            }
+
         } catch (UnknownHostException e){e.printStackTrace();}
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,57 +117,207 @@ buttona.setOnAction(new EventHandler<ActionEvent>() {
 
 
 });
+lets_try_to_add_button_and_text.getChildren().addAll(add_new);
+
+add_new.setOnAction(new EventHandler<ActionEvent>() {
+    @Override
+    public void handle(ActionEvent event) {
+
+       if (add_new.getText()=="clicked")
+           add_new.setText("add new");
+               else {
+           add_new.setText("clicked");
+
+
+          String ipv_test= open_window_method(primaryStage);
+
+textField2.setText(ipv_test);
+
+
+/*
+
+
+GridPane second_window_grid = new GridPane();
+StackPane window_secondo = new StackPane();
+window_secondo.getChildren().addAll(second_window_grid);
+
+
+           Scene window_new = new Scene(window_secondo,400,400);
+Stage open_da_window_Stage = new Stage();
+open_da_window_Stage.setScene(window_new);
+
+open_da_window_Stage.setTitle("2nd window opened");
+
+Button button_add_2nd_window = new Button("ADD");
+Button button_cancel_2nd_window = new Button("CANCEL");
+HBox hbox_2nd_window_but= new HBox();
+hbox_2nd_window_but.getChildren().addAll(button_add_2nd_window, button_cancel_2nd_window);
+
+
+
+Label label_IP_addres_label_2nd_win = new Label("* IP Address");
+           Label label_Network_name_2nd_win = new Label("*Network Name:");
+Label label_Acces_point_location_2nd_win= new Label("AccessPoint Location");
+
+Label label_Device_name_2nd_win = new Label("Device Name");
+
+
+TextField text_IP_addres_label_2nd_win  = new TextField();
+           TextField text_Network_name_2nd_win  = new TextField();
+           TextField   text_Acces_point_location_2nd_win= new TextField();
+           TextField  text_Device_name_2nd_win = new TextField();
+
+second_window_grid.setAlignment(Pos.CENTER);
+second_window_grid.setPadding(new Insets(15,15,15,15));
+second_window_grid.setVgap(15);
+second_window_grid.setHgap(30);
+second_window_grid.add(label_IP_addres_label_2nd_win, 0,0);
+second_window_grid.add(text_IP_addres_label_2nd_win, 1,0);
+           second_window_grid.add(label_Network_name_2nd_win, 0,1);
+           second_window_grid.add(text_Network_name_2nd_win, 1,1);
+
+           second_window_grid.add(label_Acces_point_location_2nd_win, 0,2);
+           second_window_grid.add(text_Acces_point_location_2nd_win, 1,2);
+           second_window_grid.add(label_Device_name_2nd_win, 0,3);
+           second_window_grid.add(text_Device_name_2nd_win,1,3);
+           hbox_2nd_window_but.setAlignment(Pos.CENTER_RIGHT);
+second_window_grid.add(hbox_2nd_window_but, 1,4);
+
+
+
+           open_da_window_Stage.setY(primaryStage.getY()+50);
+           open_da_window_Stage.setX(primaryStage.getX()+50);
+           open_da_window_Stage.show();
+
+
+
+           button_add_2nd_window.setOnAction(new EventHandler<ActionEvent>() {
+               @Override
+               public void handle(ActionEvent event) {
+if (!text_Network_name_2nd_win.getText().trim().isEmpty()){
+if (text_IP_addres_label_2nd_win.getText().trim().isEmpty())
+{
+text_IP_addres_label_2nd_win.setText("enter value");
+    label_IP_addres_label_2nd_win.setTextFill(Color.web("#0076a3"));
+
+}
+else {
+    InetAddress add_addres_2nd_window = null;
+    try {
+        add_addres_2nd_window = InetAddress.getByName(text_IP_addres_label_2nd_win.getText());
+    } catch (java.net.UnknownHostException e) {
+        e.printStackTrace();
+    }
+
+    if (!((add_addres_2nd_window instanceof  Inet6Address)||(add_addres_2nd_window instanceof  Inet4Address))){
+
+        text_IP_addres_label_2nd_win.setText(text_IP_addres_label_2nd_win.getText()+" enter valid ip address");
+        label_IP_addres_label_2nd_win.setTextFill(Color.web("#0076a3"));
+
+
+        stack_all_ip_addreses.add(text_IP_addres_label_2nd_win.getText()+";"+text_Network_name_2nd_win);
+
+        try {
+            try {
+
+
+
+InetAddress ipv4_innet_check_2nd_window =  InetAddress.getByName(text_IP_addres_label_2nd_win.getText());
+
+        if (ipv4_innet_check_2nd_window.isReachable(1000)) {
+            textField2.setText("alive");
+            Button alive_b = new Button("alive");
+
+        }
+        else {
+            textField2.setText("no alive");
+            Button alive_b = new Button("no alive");
+            textArea.getChildrenUnmodifiable().addAll(alive_b) ;
+
+        } } catch (java.net.UnknownHostException e){e.printStackTrace();}
+        }
+        catch (IOException e){
+            e.printStackTrace();
+
+        }
+
+
+        open_da_window_Stage.close();
+
+
+    }
+
+
+
+
+
+}} else label_Network_name_2nd_win.setTextFill(Color.web("#0076a3"));
+
+
+
+               }
+           });
+
+*/
+
+
+
+
+       }
+
+    }
+});
+
 // radiobuta
 button1.setOnAction(new EventHandler<ActionEvent>() {
     @Override
     public void handle(ActionEvent event) {
 
-        if(textField2.getText()=="")            textField2.setStyle("-fx-background-color: #ff0000; ");
- else   label.setText( is_ipv4_ipv6_or_not(textField2.getText()));
-//String addres4 = textField2.getText();
- //InetAddress some = new InetAddress.getByName(addres4);
+        if (textField2.getText().trim().isEmpty()) textField2.setStyle("-fx-background-color: #ff0000; ");
+        else label.setText(is_ipv4_ipv6_or_not(textField2.getText()));
 
-        String partial_ipv4=textField2.getText().substring(0, textField2.getText().lastIndexOf("."));
-        String end_ipv4=  textField2.getText().substring(textField2.getText().lastIndexOf(".")+1);
-String helpfull_string;
 
-ip_check[] tryna= new  ip_check [10];
-ipstatus.setFont(Font.font(25));
-for (int i=0; i<10;i++){
-    helpfull_string= partial_ipv4+"."+Integer.toString(Integer.parseInt(end_ipv4)+i);
+        String partial_ipv4 = textField2.getText().substring(0, textField2.getText().lastIndexOf("."));
+        String end_ipv4 = textField2.getText().substring(textField2.getText().lastIndexOf(".") + 1);
+        String helpfull_string;
 
-    tryna[i]= new ip_check(helpfull_string);
-    tryna[i].run();
-    textArea.appendText(tryna[i].getResult());
-ipvtry.setText(ipvtry.getText()+"\r\n"+tryna[i].getResult());
-if (tryna[i].alive_not)
-{
-    ipstatus.setStyle("-fx-text-fill: red");
+        ip_check[] tryna = new ip_check[10];
 
-ipstatus.setText(ipstatus.getText()+"\n.");
-}
-else {
-    ipstatus.setStyle("-fx-text-fill: green");
+        for (int i = 0; i < 10; i++) {
+            helpfull_string = partial_ipv4 + "." + Integer.toString(Integer.parseInt(end_ipv4) + i);
+            tryna[i] = new ip_check(helpfull_string);
+            tryna[i].run();
+            //   textArea.appendText(tryna[0].getResult());
+//ipvtry.setText(tryna[0].getResult());
+            Label [] text_with_ip = new Label[10];
+            text_with_ip[i]= new Label();
 
-    ipstatus.setText(ipstatus.getText()+"\n.");
+            text_with_ip[i].setText(tryna[i].getResult());
+            Button [] aliveabc= new Button[10];
+            aliveabc[i]= new Button();
 
-}
+
+            if (tryna[i].getResult().contains("alive")) {
+                aliveabc[i] = new Button("alive");
+                lets_try_to_add_button_and_text_inflowpane.getChildren().addAll(text_with_ip[i], aliveabc[i]);
+
+            } else {
+                aliveabc[i]  = new Button("ded");
+                lets_try_to_add_button_and_text_inflowpane.getChildren().addAll(text_with_ip[i], aliveabc[i]);
+            }
+
 
 //    label.setGraphic();
 
 
-
-}
-        horizoBox.getChildren().addAll(ipvtry, ipstatus);
-
-
-
+//}
+           // horizoBox.getChildren().addAll(ipvtry);
 
 
 //// dac koilor jezeli puste jet
 
 
-
+        }
     }
 });
 
@@ -172,14 +346,19 @@ else {
         gridPane.add(button1, 1,3);
         gridPane.add(rb1, 2,3);
         gridPane.add(rb2, 3,3);
-        gridPane.add(hbox, 4,4);
+       gridPane.add(hbox, 4,4);
         gridPane.add( label, 4,1);
+        gridPane.add(lets_try_to_add_button_and_text, 1,7);
+        gridPane.add(lets_try_to_add_button_and_text_inflowpane, 1, 6);
+        gridPane.add(verbox_ipp_added_from_second_window, 1,8);
       //  gridPane.add(verticalbox, 1, 4);
 //gridPane.add(circle,4,4);
 
 gridPane.add(horizoBox, 1,5);
 
         primaryStage.setScene(new Scene(gridPane));
+
+
 
 
 
@@ -194,6 +373,118 @@ gridPane.add(horizoBox, 1,5);
 
 
     }
+    public static String open_window_method (Stage primaryStage){
+
+        GridPane second_window_grid = new GridPane();
+        StackPane window_secondo = new StackPane();
+        window_secondo.getChildren().addAll(second_window_grid);
+
+
+        Scene window_new = new Scene(window_secondo,400,400);
+        Stage open_da_window_Stage = new Stage();
+        open_da_window_Stage.setScene(window_new);
+
+        open_da_window_Stage.setTitle("2nd window opened");
+
+        Button button_add_2nd_window = new Button("ADD");
+        Button button_cancel_2nd_window = new Button("CANCEL");
+        HBox hbox_2nd_window_but= new HBox();
+        hbox_2nd_window_but.getChildren().addAll(button_add_2nd_window, button_cancel_2nd_window);
+
+
+
+        Label label_IP_addres_label_2nd_win = new Label("* IP Address");
+        Label label_Network_name_2nd_win = new Label("*Network Name:");
+        Label label_Acces_point_location_2nd_win= new Label("AccessPoint Location");
+
+        Label label_Device_name_2nd_win = new Label("Device Name");
+
+
+        TextField text_IP_addres_label_2nd_win  = new TextField();
+        TextField text_Network_name_2nd_win  = new TextField();
+        TextField   text_Acces_point_location_2nd_win= new TextField();
+        TextField  text_Device_name_2nd_win = new TextField();
+
+        second_window_grid.setAlignment(Pos.CENTER);
+        second_window_grid.setPadding(new Insets(15,15,15,15));
+        second_window_grid.setVgap(15);
+        second_window_grid.setHgap(30);
+        second_window_grid.add(label_IP_addres_label_2nd_win, 0,0);
+        second_window_grid.add(text_IP_addres_label_2nd_win, 1,0);
+        second_window_grid.add(label_Network_name_2nd_win, 0,1);
+        second_window_grid.add(text_Network_name_2nd_win, 1,1);
+
+        second_window_grid.add(label_Acces_point_location_2nd_win, 0,2);
+        second_window_grid.add(text_Acces_point_location_2nd_win, 1,2);
+        second_window_grid.add(label_Device_name_2nd_win, 0,3);
+        second_window_grid.add(text_Device_name_2nd_win,1,3);
+        hbox_2nd_window_but.setAlignment(Pos.CENTER_RIGHT);
+        second_window_grid.add(hbox_2nd_window_but, 1,4);
+
+
+
+        open_da_window_Stage.setY(primaryStage.getY()+50);
+        open_da_window_Stage.setX(primaryStage.getX()+50);
+        open_da_window_Stage.show();
+
+
+        final String[] ipv4_innet = new String[1];
+        button_add_2nd_window.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (!text_Network_name_2nd_win.getText().trim().isEmpty()){
+                    if (text_IP_addres_label_2nd_win.getText().trim().isEmpty())
+                    {
+                        text_IP_addres_label_2nd_win.setText("enter value");
+                        label_IP_addres_label_2nd_win.setTextFill(Color.web("#0076a3"));
+
+                    }
+                    else {
+                        InetAddress add_addres_2nd_window = null;
+                        try {
+                            add_addres_2nd_window = InetAddress.getByName(text_IP_addres_label_2nd_win.getText());
+                        } catch (java.net.UnknownHostException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (!((add_addres_2nd_window instanceof  Inet6Address)||(add_addres_2nd_window instanceof  Inet4Address))){
+
+                            text_IP_addres_label_2nd_win.setText(text_IP_addres_label_2nd_win.getText()+" enter valid ip address");
+                            label_IP_addres_label_2nd_win.setTextFill(Color.web("#0076a3"));
+
+
+
+
+                        }
+
+
+else {
+
+
+
+                            ipv4_innet[0] = text_IP_addres_label_2nd_win.getText();
+
+                        }
+
+
+
+
+
+
+
+                    }} else label_Network_name_2nd_win.setTextFill(Color.web("#0076a3"));
+
+
+
+            }
+        });
+
+
+        return ipv4_innet[0];
+
+    }
+
+
 
 public static String is_ipv4_ipv6_or_not (String addres){
 
@@ -250,11 +541,7 @@ class ip_check extends Thread {
     String ipv4;
  boolean alive_not=false;
 
-    public boolean get_circle_result(){
-   return  alive_not;
 
-
- }
 
     public ip_check() { ipv4 = ""; }
 
